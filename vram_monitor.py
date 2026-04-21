@@ -167,8 +167,7 @@ def monitor_loop(threshold_gb: float, poll_sec: int):
             if free >= threshold_gb:
                 print(f"[Monitor] ▼ Model RELEASED — {free:.1f} GB free")
                 trigger_event(free)
-                # Stay in LOADED so repeated load/unload cycles re-trigger
-                status.state = VRAMState.LOADED
+                status.state = VRAMState.IDLE
 
         time.sleep(poll_sec)
 
