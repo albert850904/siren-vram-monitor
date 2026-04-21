@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    name: Lint & Type Check
+    runs-on: windows-latest  # win11toast requires Windows
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install ruff pyright
+          pip install fastapi uvicorn httpx pynvml
+          # win11toast and winsound are Windows-only, skip in CI stub check
+          pip install win11toast || true
+
+      - name: Ruff lint
+        run: ruff check vram_monitor.py
+
+      - name: Ruff format check
+        run: ruff format --check vram_monitor.py
+
+      - name: Pyright type check
+        run: pyright vram_monitor.py
